@@ -1,5 +1,9 @@
 <template>
-    <div>
-        <slot />
-    </div>
+  <div class="flex">
+
+    <main class="flex-1">
+      <NuxtPage />
+    </main>
+
+  </div>
 </template>

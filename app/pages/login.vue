@@ -45,7 +45,7 @@
             <label class="text-gray-700 text-sm">username</label>
             <input
               v-model="username"
-              type="username"
+              type="text"
               placeholder="username"
               class="w-full h-11 mt-1 pl-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             />
@@ -77,8 +77,8 @@
           class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 text-xs"
         >
           <p class="font-semibold mb-2">Demo Accounts:</p>
-          <p>Guru:  / </p>
-          <p>Siswa:  / </p>
+          <p>Guru: {{ credentials[0].username }} / {{ credentials[0].password }}</p>
+          <p>Siswa: {{ credentials[1].username }} / {{ credentials[1].password }}</p>
         </div>
       </div>
     </div>
@@ -90,24 +90,24 @@ import { GraduationCap } from "lucide-vue-next";
 import { ref } from "vue";
 const router = useRouter();
 
-const email = ref("");
+const username = ref("");
 const password = ref("");
 const error = ref("");
 
 const credentials = [
-  { email: "admin@sekolah.com", password: "admin123", role: "admin" },
-  { email: "siswa@sekolah.com", password: "siswa123", role: "siswa" },
+  { username: "admin", password: "admin123", role: "admin" },
+  { username: "siswa", password: "siswa123", role: "siswa" },
 ];
 
 const handleSubmit = () => {
   const user = credentials.find(
-    (u) => u.email === email.value && u.password === password.value,
+    (u) => u.username === username.value && u.password === password.value,
   );
 
   if (user) {
-    router.push(`/dashboard/${user.role}`);
+    router.push(`/dashboard`);
   } else {
-    error.value = "Email atau password salah!";
+    error.value = "Username atau password salah!";
   }
 };
 </script>
