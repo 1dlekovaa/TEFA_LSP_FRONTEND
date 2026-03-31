@@ -1,4 +1,4 @@
-<template>
+<template  emplate>
   <div class="flex">
 
     <main class="flex-1">

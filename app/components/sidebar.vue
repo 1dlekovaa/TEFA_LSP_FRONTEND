@@ -58,11 +58,12 @@ const toggleMenu = (menu) => {
           : 'max-h-0'">
 
         <NuxtLink
-          to="/referensi/skema"
-          class="block ml-6 py-2 hover:bg-white/20 rounded">
-          Skema
+        to="/referensi/skema"
+        class="block ml-6 py-2 rounded transition-all duration-200"
+        exact-active-class="bg-white/30">
+        Data Skema
         </NuxtLink>
-
+        
       </div>
     </div>
 
