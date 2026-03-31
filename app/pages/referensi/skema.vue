@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 // 📦 DATA
-const skema = ref([])
+const skema = ref([]) // nanti diisi data dari backend
 
 // 🔍 SEARCH
 const search = ref("")
@@ -97,7 +97,7 @@ const changePage = (page) => {
               <th class="p-2 border text-left">Nomor Skema</th>
               <th class="p-2 border text-left">Judul Skema</th>
               <th class="p-2 border text-left">Jenis Skema</th>
-              <th class="p-2 border text-center">File</th>
+              <th class="p-2 border text-center">File Skema</th>
               <th class="p-2 border text-center">Jumlah Unit</th>
               <th class="p-2 border text-center">Aksi</th>
             </tr>
@@ -119,16 +119,21 @@ const changePage = (page) => {
 
               <!-- FILE BUTTON -->
               <td class="p-2 border text-center">
-                <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
-                  ⬇
+                <button
+                  class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                >
+                  {{ item?.file || 'File Skema' }}
                 </button>
               </td>
 
-              <!-- BADGE UNIT -->
+              <!-- UNIT BUTTON -->
               <td class="p-2 border text-center">
-                <span class="bg-green-500 text-white px-3 py-1 rounded text-xs">
-                  {{ item?.unit }} Unit
-                </span>
+                <button
+                  class="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600"
+                  @click="() => alert(`Jumlah unit: ${item?.unit || 0}`)"
+                >
+                  {{ item?.unit || 0 }} Unit
+                </button>
               </td>
 
               <!-- AKSI -->
@@ -136,12 +141,6 @@ const changePage = (page) => {
                 <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
                   ☰
                 </button>
-              </td>
-            </tr>
-
-            <tr v-if="paginatedData.length === 0">
-              <td colspan="7" class="text-center p-4 text-gray-500">
-                Tidak ada data
               </td>
             </tr>
           </tbody>
