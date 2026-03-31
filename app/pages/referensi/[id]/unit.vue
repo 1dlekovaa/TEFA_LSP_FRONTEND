@@ -1,0 +1,157 @@
+<script setup>
+import { ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+definePageMeta({
+  layout: "dashboard",
+});
+
+// Router
+const router = useRouter();
+
+// Ambil skemaId dari URL
+const route = useRoute();
+const skemaId = Number(route.params.id);
+
+// Dummy Data Unit
+const units = ref([
+  { id: 1, skema_id: 1, kode_unit: "U-001", judul_unit: "Mengoperasikan Komputer", jenis_standar: "SKKNI", jumlah_elemen: 3 },
+  { id: 2, skema_id: 1, kode_unit: "U-002", judul_unit: "Mengelola Database", jenis_standar: "SKKNI", jumlah_elemen: 5 },
+  { id: 3, skema_id: 2, kode_unit: "U-003", judul_unit: "Membuat Aplikasi Web", jenis_standar: "Okupasi", jumlah_elemen: 4 },
+  { id: 4, skema_id: 2, kode_unit: "U-004", judul_unit: "Desain UI/UX", jenis_standar: "Okupasi", jumlah_elemen: 2 },
+  { id: 5, skema_id: 3, kode_unit: "U-005", judul_unit: "Digital Marketing Campaign", jenis_standar: "Klaster", jumlah_elemen: 6 },
+]);
+
+// Filter units berdasarkan skema_id
+const filteredUnits = computed(() => units.value.filter((unit) => unit.skema_id === skemaId));
+
+// 🔍 Search
+const search = ref("");
+const filteredData = computed(() =>
+  filteredUnits.value.filter((item) => (item?.judul_unit || "").toLowerCase().includes(search.value.toLowerCase()))
+);
+
+// 📄 Show Entries (Limit)
+const perPage = ref(5);
+const totalPages = computed(() => Math.ceil(filteredData.value.length / perPage.value));
+
+// 📄 Pagination
+const currentPage = ref(1);
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * perPage.value;
+  return filteredData.value.slice(start, start + perPage.value);
+});
+
+// 🔁 Change Page
+const changePage = (page) => {
+  if (page < 1 || page > totalPages.value) return;
+  currentPage.value = page;
+};
+
+// 🎯 Actions
+const goBack = () => router.push("/referensi/skema");
+const addUnit = () => alert("Tambah Unit ditekan");
+const copyUnit = () => alert("Salin Unit ditekan");
+const editUnit = (id) => alert(`Edit Unit ID ${id}`);
+const deleteUnit = (id) => alert(`Hapus Unit ID ${id}`);
+const showElemen = (unit) => alert(`Unit ${unit.judul_unit} memiliki ${unit.jumlah_elemen} elemen`);
+</script>
+
+<template>
+  <div class="p-6">
+    <!-- BREADCRUMB -->
+    <div class="mb-6">
+      <nav class="text-sm text-gray-500">
+        <ol class="flex items-center gap-2">
+          <li><NuxtLink to="/dashboard" class="hover:text-blue-600">Dashboard</NuxtLink></li>
+          <li>/</li>
+          <li>Referensi</li>
+          <li>/</li>
+          <li class="text-blue-600 font-semibold">Skema</li>
+        </ol>
+      </nav>
+    </div>
+
+    <h1 class="text-2xl font-semibold mb-4">Unit - Skema ID: {{ skemaId }}</h1>
+
+    <div class="bg-white rounded shadow p-4">
+
+      <!-- TOP BUTTONS -->
+      <div class="flex items-center gap-2 mb-4">
+        <button @click="goBack" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Kembali</button>
+        <button @click="addUnit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Tambah Unit</button>
+        <button @click="copyUnit" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Salin Unit</button>
+      </div>
+
+      <!-- SHOW & SEARCH -->
+      <div class="flex justify-between items-center mb-4 text-sm">
+        <div>
+          Show
+          <select v-model="perPage" class="border px-2 py-1 rounded mx-1">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+          </select>
+          entries
+        </div>
+        <div class="flex items-center gap-2">
+          <span>Search:</span>
+          <input v-model="search" class="border px-2 py-1 rounded" placeholder="Cari unit..." />
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="overflow-x-auto">
+        <table class="w-full border text-sm">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="p-2 border text-left">No</th>
+              <th class="p-2 border text-left">Kode Unit</th>
+              <th class="p-2 border text-left">Judul Unit</th>
+              <th class="p-2 border text-left">Jenis Standar</th>
+              <th class="p-2 border text-center">Jumlah Elemen</th>
+              <th class="p-2 border text-center">Aksi</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="(unit, index) in paginatedData" :key="unit.id" class="hover:bg-gray-50">
+              <td class="p-2 border">{{ (currentPage - 1) * perPage + index + 1 }}</td>
+              <td class="p-2 border">{{ unit.kode_unit }}</td>
+              <td class="p-2 border">{{ unit.judul_unit }}</td>
+              <td class="p-2 border">{{ unit.jenis_standar }}</td>
+
+              <!-- Jumlah Elemen sebagai Button Hijau -->
+              <td class="p-2 border text-center">
+                <button @click="showElemen(unit)" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">
+                  {{ unit.jumlah_elemen }} Elemen
+                </button>
+              </td>
+
+              <!-- Aksi -->
+              <td class="p-2 border text-center">
+                <button @click="editUnit(unit.id)" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">Edit</button>
+                <button @click="deleteUnit(unit.id)" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 ml-1">Hapus</button>
+              </td>
+            </tr>
+            <tr v-if="filteredData.length === 0">
+              <td class="p-2 border text-center" colspan="6">Belum ada unit</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FOOTER (Pagination) -->
+      <div class="flex justify-between items-center mt-4 text-sm">
+        <div>Showing {{ (currentPage - 1) * perPage + 1 }} to {{ Math.min(currentPage * perPage, filteredData.length) }} of {{ filteredData.length }} entries</div>
+
+        <div class="flex justify-center gap-1">
+          <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="px-3 py-1 border rounded">Previous</button>
+          <button v-for="page in totalPages" :key="page" @click="changePage(page)" class="px-3 py-1 border rounded" :class="currentPage === page ? 'bg-blue-500 text-white' : ''">{{ page }}</button>
+          <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="px-3 py-1 border rounded">Next</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</template>
