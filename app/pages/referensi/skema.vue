@@ -48,7 +48,9 @@ const changePage = (page) => {
     <div class="mb-6">
       <nav class="text-sm text-gray-500">
         <ol class="flex items-center gap-2">
-          <li>Dashboard</li>
+          <li>
+            <NuxtLink to="/dashboard" class="hover:text-blue-600">Dashboard</NuxtLink>
+          </li>
           <li>/</li>
           <li>Referensi</li>
           <li>/</li>
@@ -158,8 +160,8 @@ const changePage = (page) => {
           entries
         </div>
 
-        <!-- PAGINATION -->
-        <div class="flex gap-1">
+        <!-- PAGINATION (Previous di tengah) -->
+        <div class="flex justify-center gap-1">
           <button
             @click="changePage(currentPage - 1)"
             :disabled="currentPage === 1"
