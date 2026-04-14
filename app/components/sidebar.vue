@@ -47,11 +47,11 @@ const toggleMenu = (menu) => {
       </button>
 
       <div class="overflow-hidden transition-all duration-300" :class="openMenu === 'uji' ? 'max-h-60' : 'max-h-0'">
-        <NuxtLink to="/uji/apl01" class="block ml-6 py-2 hover:bg-white/20 rounded"> APL-01 </NuxtLink>
+        <NuxtLink to="/uji/apl01" class="block ml-6 py-2 hover:bg-white/20 rounded"> Pengajuan (APL-02)</NuxtLink>
 
-        <NuxtLink to="/uji/apl02" class="block ml-6 py-2 hover:bg-white/20 rounded"> APL-02 </NuxtLink>
+        <NuxtLink to="/uji/apl02" class="block ml-6 py-2 hover:bg-white/20 rounded"> Pelaksanaan Ujikom </NuxtLink>
 
-        <NuxtLink to="/uji/penilaian" class="block ml-6 py-2 hover:bg-white/20 rounded"> Penilaian </NuxtLink>
+        <NuxtLink to="/uji/penilaian" class="block ml-6 py-2 hover:bg-white/20 rounded"> Kerahasiaan (AK-01)</NuxtLink>
       </div>
     </div>
 

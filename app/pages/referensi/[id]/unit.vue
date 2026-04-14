@@ -70,7 +70,7 @@ const goBack = () => {
     </h1>
      <!-- ✅ BREADCRUMB PINDAH KE BAWAH -->
       <div class="mt-6">
-        <nav class="text-sm text-gray-500 mb-4">
+                <nav class="text-sm text-gray-500 mb-4">
           <ol class="flex items-center gap-2 flex-wrap">
 
             <li>
@@ -81,14 +81,12 @@ const goBack = () => {
 
             <li>/</li>
 
-            <li>
-              <li>Referensi</li>
-            </li>
+            <li>Referensi</li>
 
             <li>/</li>
 
             <li>
-              <NuxtLink to="/referensi/skema" class="hover:text-blue-600">
+              <<NuxtLink to="/referensi" class="hover:text-blue-600">
                 Data Skema
               </NuxtLink>
             </li>
