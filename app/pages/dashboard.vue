@@ -1,76 +1,86 @@
-<script setup>
+<script setup lang="ts">
+import { ref, reactive, onMounted } from 'vue'
+import { dashboardService } from '@/services/dashboardService'
+
 definePageMeta({
   layout: "dashboard"
 })
-import { User, Package, UserSearch, ClipboardCheck } from 'lucide-vue-next';
+
+const isLoading = ref(false)
+const error = ref<string | null>(null)
+const stats = reactive({
+  asesi: 0,
+  asesor: 0,
+  user: 0,
+  skema: 0,
+})
+
+onMounted(async () => {
+  isLoading.value = true
+  error.value = null
+  
+  try {
+    const response = await dashboardService.getStats()
+    
+    if (response.success) {
+      stats.asesi = response.data.data?.asesi || 0
+      stats.asesor = response.data.data?.asesor || 0
+      stats.user = response.data.data?.user || 0
+      stats.skema = response.data.data?.skema || 0
+    } else {
+      error.value = response.error
+    }
+  } catch (err: any) {
+    error.value = err.message
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto">
-
+  <div class="space-y-6">
     <!-- Header -->
-    <div class="mb-6">
-      <h1 class="text-3xl font-extrabold tracking-tight">Dashboard</h1>
-      <p class="text-sm text-slate-500 mt-1">
-        LSP P1 - SMK NEGERI 1 GARUT
-      </p>
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+      <p class="text-gray-600 mt-1">Selamat datang di Admin Panel</p>
     </div>
 
-    <!-- Cards -->
-    <div class="grid grid-cols-2 gap-6">
+    <!-- Loading State -->
+    <div v-if="isLoading" class="text-center py-12">
+      <div class="inline-block">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+      <p class="mt-3 text-gray-600">Loading data...</p>
+    </div>
 
-      <!-- Card 1 -->
-      <NuxtLink to="/referensi" class="bg-[#1C6B93] text-white rounded-xl p-6 shadow-lg cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95">
-        <div class="flex items-center justify-between mb-4">
-          <div class="bg-white/20 p-3 rounded-lg">
-            <User class="w-6 h-6" />
-          </div>
-          <h2 class="text-5xl font-black">3</h2>
-        </div>
-        <p class="text-base uppercase tracking-wider text-white/80 font-semibold">
-          Jumlah Skema
-        </p>
-      </NuxtLink>
+    <!-- Error State -->
+    <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <p class="text-red-800">Gagal memuat data: {{ error }}</p>
+    </div>
 
-      <!-- Card 2 -->
-      <NuxtLink to="/referensi" class="bg-[#1C6B93] text-white rounded-xl p-6 shadow-lg cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95">
-        <div class="flex items-center justify-between mb-4">
-          <div class="bg-white/20 p-3 rounded-lg">
-            <Package class="w-6 h-6" />
-          </div>
-          <h2 class="text-5xl font-black">13</h2>
-        </div>
-        <p class="text-base uppercase tracking-wider text-white/80 font-semibold">
-          Jumlah Paket
-        </p>
-      </NuxtLink>
-
-      <!-- Card 3 -->
-      <NuxtLink to="/referensi" class="bg-[#1C6B93] text-white rounded-xl p-6 shadow-lg cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95">
-        <div class="flex items-center justify-between mb-4">
-          <div class="bg-white/20 p-3 rounded-lg">
-            <UserSearch class="w-6 h-6" />
-          </div>
-          <h2 class="text-5xl font-black">64</h2>
-        </div>
-        <p class="text-base uppercase tracking-wider text-white/80 font-semibold">
-          Jumlah Asesi
-        </p>
-      </NuxtLink>
-
-      <!-- Card 4 -->
-      <NuxtLink to="/referensi" class="bg-[#1C6B93] text-white rounded-xl p-6 shadow-lg cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95">
-        <div class="flex items-center justify-between mb-4">
-          <div class="bg-white/20 p-3 rounded-lg">
-            <ClipboardCheck class="w-6 h-6" />
-          </div>
-          <h2 class="text-5xl font-black">30</h2>
-        </div>
-        <p class="text-base uppercase tracking-wider text-white/80 font-semibold">
-          Ajual APL-02
-        </p>
-      </NuxtLink>
-
+    <!-- Stats Cards -->
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <DashboardCard 
+        title="Jumlah Asesi"
+        :value="stats.asesi"
+        type="asesi"
+      />
+      <DashboardCard 
+        title="Jumlah Asesor"
+        :value="stats.asesor"
+        type="asesor"
+      />
+      <DashboardCard 
+        title="Jumlah Pengguna"
+        :value="stats.user"
+        type="user"
+      />
+      <DashboardCard 
+        title="Jumlah Skema"
+        :value="stats.skema"
+        type="skema"
+      />
     </div>
   </div>
 </template>
