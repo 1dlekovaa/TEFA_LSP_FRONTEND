@@ -82,9 +82,7 @@ const goBack = () => {
             <li>/</li>
 
             <li>
-              <NuxtLink to="/referensi/skema" class="hover:text-blue-600">
-                Referensi
-              </NuxtLink>
+              <li>Referensi</li>
             </li>
 
             <li>/</li>
