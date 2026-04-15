@@ -46,7 +46,11 @@ const proses = (item) => {
 
 <template>
   <div class="card">
-    <h2 class="title">FR.APL-02. ASESMEN MANDIRI ASESI</h2>
+    
+    <h1 class="text-2xl font-semibold mb-4">
+      FR.APL-02. ASESMEN MANDIRI ASESI
+    </h1>
+
     <p class="subtitle">LSP P1 - SMK NEGERI 1 GARUT</p>
 
     <!-- Tabs -->
