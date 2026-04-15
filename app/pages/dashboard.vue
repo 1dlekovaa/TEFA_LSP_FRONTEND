@@ -1,7 +1,9 @@
 <script setup>
+
 definePageMeta({
   layout: "dashboard"
 })
+
 import { User, Package, UserSearch, ClipboardCheck } from 'lucide-vue-next';
 </script>
 
