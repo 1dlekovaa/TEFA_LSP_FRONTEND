@@ -39,7 +39,6 @@ const paginated = computed(() => {
   return filtered.value.slice(start, start + perPage.value)
 })
 
-// ACTION
 const proses = (item) => {
   alert("Proses: " + item.nama)
 }
