@@ -40,18 +40,36 @@ const toggleMenu = (menu) => {
 
     <!-- UJI KOMPETENSI -->
     <div>
-      <button @click="toggleMenu('uji')" class="flex justify-between w-full px-4 py-2 hover:bg-white/20 rounded">
+      <button
+        @click="toggleMenu('uji Kompetensi')"
+        class="flex justify-between w-full px-4 py-2 hover:bg-white/20 rounded">
+
         Uji Kompetensi
 
-        <ChevronRight class="w-4 transition duration-300" :class="openMenu === 'uji' ? 'rotate-90' : ''" />
+        <ChevronRight
+          class="w-4 transition duration-300"
+          :class="openMenu==='uji Kompetensi'?'rotate-90':''"/>
       </button>
 
-      <div class="overflow-hidden transition-all duration-300" :class="openMenu === 'uji' ? 'max-h-60' : 'max-h-0'">
-        <NuxtLink to="/uji/apl01" class="block ml-6 py-2 hover:bg-white/20 rounded"> APL-01 </NuxtLink>
+      <div
+        class="overflow-hidden transition-all duration-300"
+        :class="openMenu==='uji Kompetensi'
+          ? 'max-h-60'
+          : 'max-h-0'">
 
-        <NuxtLink to="/uji/apl02" class="block ml-6 py-2 hover:bg-white/20 rounded"> APL-02 </NuxtLink>
+          <NuxtLink to="/uji-kompetisi/pengajuan" class="block ml-6 py-2 hover:bg-white/20 rounded">
+          Pengajuan
+        </NuxtLink>
 
-        <NuxtLink to="/uji/penilaian" class="block ml-6 py-2 hover:bg-white/20 rounded"> Penilaian </NuxtLink>
+        <NuxtLink to="/uji/apl02" class="block ml-6 py-2 hover:bg-white/20 rounded">
+          APL-02
+        </NuxtLink>
+
+        <NuxtLink to="/uji/penilaian" class="block ml-6 py-2 hover:bg-white/20 rounded">
+          Penilaian
+        </NuxtLink>
+
+        <NuxtLink to="/uji/penilaian" class="block ml-6 py-2 hover:bg-white/20 rounded"> Kerahasiaan (AK-01)</NuxtLink>
       </div>
     </div>
 

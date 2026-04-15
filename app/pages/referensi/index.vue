@@ -64,25 +64,26 @@ const changePage = (page) => {
 
 <template>
   <div>
-    <!-- BREADCRUMB -->
-    <div class="mb-6">
-      <nav class="text-sm text-gray-500">
-        <ol class="flex items-center gap-2">
-          <li>
-            <NuxtLink to="/dashboard" class="hover:text-blue-600">Dashboard</NuxtLink>
-          </li>
-          <li>/</li>
-          <li>Referensi</li>
-          <li>/</li>
-          <li class="text-blue-600 font-semibold">Skema</li>
-        </ol>
-      </nav>
-    </div>
-
     <h1 class="text-2xl font-semibold mb-1">Skema</h1>
-    <p class="text-gray-500 mb-4"></p>
+<p class="text-gray-500 mb-4"></p>
 
-    <div class="bg-white rounded shadow p-4">
+<!-- 🔽 BREADCRUMB PINDAH KE BAWAH -->
+  <div class="mb-6">
+    <nav class="text-sm text-gray-500">
+      <ol class="flex items-center gap-2">
+        <li>
+          <NuxtLink to="/dashboard" class="hover:text-blue-600">Dashboard</NuxtLink>
+        </li>
+        <li>/</li>
+        <li>Referensi</li>
+        <li>/</li>
+        <li class="text-blue-600 font-semibold">Data Skema</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="bg-white rounded shadow p-4">
+      
       <!-- HEADER -->
       <h2 class="font-semibold mb-4">Data Skema</h2>
 

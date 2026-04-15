@@ -1,9 +1,12 @@
-<template  emplate>
-  <div class="flex">
+<template>
+  <div class="min-h-screen bg-gray-100">
+    <div class="flex">
 
-    <main class="flex-1">
-      <NuxtPage />
-    </main>
+      <!-- Content -->
+      <main class="flex-1 p-6">
+        <slot />
+      </main>
 
+    </div>
   </div>
 </template>
