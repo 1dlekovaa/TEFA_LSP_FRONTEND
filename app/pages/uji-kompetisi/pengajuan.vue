@@ -122,7 +122,7 @@ const proses = (item) => {
           <td>2024-04-22</td>
           <td>
             <button class="btn-proses" @click="proses(item)">
-              ✏️ Proses
+               Proses
             </button>
           </td>
         </tr>
