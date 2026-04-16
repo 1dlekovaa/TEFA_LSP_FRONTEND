@@ -61,7 +61,7 @@ const toggleMenu = (menu) => {
           Pengajuan APL(02)
         </NuxtLink>
 
-        <NuxtLink to="/uji/penilaian" class="block ml-6 py-2 hover:bg-white/20 rounded">
+        <NuxtLink to="/uji-kompetensi/pelaksanaan" class="block ml-6 py-2 hover:bg-white/20 rounded">
           Pelaksanaan Ujikom
         </NuxtLink>
 
