@@ -46,9 +46,9 @@
             v-else
             class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-3xl text-gray-600 mb-4"
           >
-            {{ item.nama_lengkap.charAt(0) }}
+            {{ item.nama_lengkap?.charAt(0) || 'A' }}
           </div>
-          <h2 class="text-2xl font-bold text-gray-900 text-center">{{ item.nama_lengkap }}</h2>
+          <h2 class="text-2xl font-bold text-gray-900 text-center">{{ item.nama_lengkap || '-' }}</h2>
           <StatusBadge :status="item.status" type="status" class="mt-2" />
         </div>
 
@@ -69,7 +69,7 @@
             </div>
             <div>
               <label class="text-sm font-medium text-gray-600">Username:</label>
-              <p class="text-gray-900 font-semibold">{{ item.username }}</p>
+              <p class="text-gray-900 font-semibold">{{ item.username || '-' }}</p>
             </div>
             <div>
               <label class="text-sm font-medium text-gray-600">Status:</label>
@@ -111,7 +111,8 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
-import { asesiService, Asesi } from '@/services/asesiService'
+import { asesiService } from '@/services/asesiService'
+import type { Asesi } from '@/services/asesiService'
 
 definePageMeta({
   layout: "dashboard"

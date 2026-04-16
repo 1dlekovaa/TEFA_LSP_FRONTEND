@@ -46,10 +46,14 @@ defineProps<{
   isSubmitting?: boolean
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   close: []
   submit: []
 }>()
+
+const onClose = () => {
+  emit('close')
+}
 </script>
 
 <style scoped>

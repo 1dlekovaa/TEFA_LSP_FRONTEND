@@ -86,12 +86,12 @@
             <td class="px-6 py-4">
               <img v-if="item.foto" :src="item.foto" :alt="item.nama_lengkap" class="w-10 h-10 rounded-full object-cover" />
               <div v-else class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-600">
-                {{ item.nama_lengkap.charAt(0) }}
+                {{ item.nama_lengkap?.charAt(0) || 'A' }}
               </div>
             </td>
             <td class="px-6 py-4 text-gray-900">{{ item.nama_lengkap }}</td>
-            <td class="px-6 py-4 text-gray-600">{{ item.no_met }}</td>
-            <td class="px-6 py-4 text-gray-600">{{ item.username }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ item.no_met || '-' }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ item.username || '-' }}</td>
             <td class="px-6 py-4">
               <StatusBadge :status="item.status" type="status" />
             </td>
@@ -151,11 +151,13 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Foto</label>
           <input 
+            ref="fotoInput"
             type="file"
             accept="image/*"
-            @change="e => (formData as any).foto = (e.target as HTMLInputElement).files?.[0]"
+            @change="handleFotoChange"
             class="w-full border border-gray-300 rounded px-3 py-2"
           />
+          <p v-if="fotoFileName" class="text-sm text-gray-500 mt-1">File: {{ fotoFileName }}</p>
         </div>
 
         <div>
@@ -219,7 +221,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { usePagination } from '@/composables/usePagination'
 import { useToast } from '@/composables/useToast'
 import type { Asesor } from '@/services/asesorService'
@@ -245,10 +247,14 @@ const modalType = ref<'create' | 'edit'>('create')
 const deleteOpen = ref(false)
 const deleteId = ref<number | null>(null)
 const deleteName = ref('')
+const fotoInput = ref<HTMLInputElement | null>(null)
+const fotoFile = ref<File | null>(null)
+const fotoFileName = ref<string>('')
 
 const { pagination, perPageOptions, goToPage, changePerPage, prevPage, nextPage, updateFromResponse, canGoPrev, canGoNext } = usePagination(10)
 
-const formData = reactive<Asesor>({
+const formData = reactive<Asesor & { id?: number }>({
+  id: undefined,
   nama_lengkap: '',
   no_met: '',
   username: '',
@@ -264,13 +270,17 @@ const fetchData = async () => {
     const response = await asesorService.getAll(pagination.value.currentPage, pagination.value.perPage, search.value)
     
     if (response.success) {
-      items.value = response.data.data
-      updateFromResponse(response.data)
+      const data = response.data?.data || []
+      items.value = Array.isArray(data) ? data : []
+      updateFromResponse(response.data || { current_page: 1, total: 0, per_page: 10 })
     } else {
       error.value = response.error
+      items.value = []
     }
   } catch (err: any) {
+    console.error('Fetch error:', err)
     error.value = err.message
+    items.value = []
   } finally {
     isLoading.value = false
   }
@@ -291,11 +301,17 @@ watch(search, () => {
 
 const openCreateModal = () => {
   modalType.value = 'create'
+  formData.id = undefined
   formData.nama_lengkap = ''
   formData.no_met = ''
   formData.username = ''
   formData.password = ''
   formData.status = 'aktif'
+  fotoFile.value = null
+  fotoFileName.value = ''
+  if (fotoInput.value) {
+    fotoInput.value.value = ''
+  }
   modalOpen.value = true
 }
 
@@ -307,6 +323,11 @@ const openEditModal = (item: Asesor) => {
   formData.username = item.username
   formData.status = item.status
   formData.password = ''
+  fotoFile.value = null
+  fotoFileName.value = ''
+  if (fotoInput.value) {
+    fotoInput.value.value = ''
+  }
   modalOpen.value = true
 }
 
@@ -314,12 +335,41 @@ const closeModal = () => {
   modalOpen.value = false
 }
 
+const handleFotoChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    fotoFile.value = file
+    fotoFileName.value = file.name
+  } else {
+    fotoFile.value = null
+    fotoFileName.value = ''
+  }
+}
+
 const handleSubmit = async () => {
+  // Basic validation
+  if (!formData.nama_lengkap || !formData.no_met || !formData.username) {
+    toastError('Mohon isi semua field yang wajib diisi')
+    return
+  }
+  
+  if (modalType.value === 'create' && !formData.password) {
+    toastError('Password tidak boleh kosong saat membuat data baru')
+    return
+  }
+  
   isSubmitting.value = true
   
   try {
+    // Add file to form data if it exists
+    const submitData = { ...formData }
+    if (fotoFile.value) {
+      (submitData as any).foto = fotoFile.value
+    }
+    
     if (modalType.value === 'create') {
-      const response = await asesorService.create(formData)
+      const response = await asesorService.create(submitData)
       if (response.success) {
         success('Data berhasil ditambahkan')
         fetchData()
@@ -328,7 +378,7 @@ const handleSubmit = async () => {
         toastError(response.error || 'Gagal menambahkan data')
       }
     } else {
-      const response = await asesorService.update(formData.id!, formData)
+      const response = await asesorService.update(formData.id!, submitData)
       if (response.success) {
         success('Data berhasil diperbarui')
         fetchData()
