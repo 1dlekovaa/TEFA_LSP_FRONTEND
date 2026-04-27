@@ -158,7 +158,7 @@ function goToPelaksanaan() {
 <style scoped>
 
 .page-header {
-  background: #e5e5e5;
+  background: #ffffff;
   padding: 20px;
   border-bottom: 2px solid #333;
 }
@@ -205,7 +205,7 @@ h2 {
 input {
   padding: 5px 10px;
   border-radius: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #ffffff;
 }
 
 select {
@@ -213,15 +213,15 @@ select {
 }
 
 table {
-  width: 100%;
+  width: 106%;
   border-collapse: collapse;
   background: white;
-  border: 1px solid #ccc;
+  border: 1px solid #ffffff;
 }
 
 th,
 td {
-  border: 1px solid #ccc;
+  border: 1px solid #ffffff;
   padding: 10px;
   text-align: center;
 }
@@ -236,7 +236,7 @@ th {
 }
 
 tbody tr:hover {
-  background-color: #f9f9f9;
+  background-color: #ffffff;
 }
 
 .btn-blue {
@@ -267,7 +267,7 @@ tbody tr:hover {
   padding: 5px 10px;
   margin: 2px;
   cursor: pointer;
-  border: 1px solid #ccc;
+  border: 1px solid #fffcfc;
   background: white;
 }
 
