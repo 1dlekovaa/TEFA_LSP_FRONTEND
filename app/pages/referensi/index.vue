@@ -75,43 +75,9 @@ const changePage = (page) => {
       <!-- INFO + PAGINATION -->
       <div class="flex justify-between items-center mt-4 text-sm">
 
-        <div>
-          Showing
-          {{ (currentPage - 1) * perPage + 1 }}
-          to
-          {{ Math.min(currentPage * perPage, filteredData.length) }}
-          of {{ filteredData.length }} entries
-        </div>
+       
 
-        <div class="flex gap-1">
-
-          <button
-            @click="changePage(currentPage - 1)"
-            :disabled="currentPage === 1"
-            class="px-3 py-1 border rounded"
-          >
-            Previous
-          </button>
-
-          <button
-            v-for="page in totalPages"
-            :key="page"
-            @click="changePage(page)"
-            class="px-3 py-1 border rounded"
-            :class="currentPage === page ? 'bg-blue-500 text-white' : ''"
-          >
-            {{ page }}
-          </button>
-
-          <button
-            @click="changePage(currentPage + 1)"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-1 border rounded"
-          >
-            Next
-          </button>
-
-        </div>
+        
       </div>
     </div>
 

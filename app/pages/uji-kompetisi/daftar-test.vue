@@ -1,45 +1,33 @@
 <template>
   <div class="container">
-    <h2>Daftar Test Uji Kompetensi</h2>
 
-    <!-- Info Paket (TABEL) -->
+    <!-- TITLE -->
+    <h2 class="title">Daftar Test Uji Kompetensi</h2>
+
+    <!-- INFO -->
     <table class="info-table">
-      <tr>
-        <td>Nama Paket</td>
-        <td>:</td>
-        <td>{{ paket.nama }}</td>
-      </tr>
-      <tr>
-        <td>Judul Skema</td>
-        <td>:</td>
-        <td>{{ paket.judul }}</td>
-      </tr>
-      <tr>
-        <td>Jadwal Ujikom</td>
-        <td>:</td>
-        <td>{{ paket.tanggal }}</td>
-      </tr>
-      <tr>
-        <td>TUK</td>
-        <td>:</td>
-        <td>{{ paket.tuk }}</td>
-      </tr>
+      <tr><td>Nama Paket</td><td>:</td><td>{{ paket.nama }}</td></tr>
+      <tr><td>Judul Skema</td><td>:</td><td>{{ paket.judul }}</td></tr>
+      <tr><td>Jadwal Ujikom</td><td>:</td><td>{{ paket.tanggal }}</td></tr>
+      <tr><td>TUK</td><td>:</td><td>{{ paket.tuk }}</td></tr>
     </table>
 
-    <!-- Tombol -->
+    <!-- ACTION -->
     <div class="actions">
       <button class="btn back" @click="goBack">← Kembali</button>
       <button class="btn primary">Jadwalkan Test</button>
     </div>
 
-    <!-- Table Data -->
-    <div class="table-wrapper">
+    <!-- CARD -->
+    <div class="card">
+
+      <!-- HEADER -->
       <div class="table-header">
         <div>
           Show
           <select v-model="limit">
-            <option value="10">10</option>
-            <option value="25">25</option>
+            <option :value="10">10</option>
+            <option :value="25">25</option>
           </select>
           entries
         </div>
@@ -52,14 +40,15 @@
         />
       </div>
 
+      <!-- TABLE -->
       <table class="main-table">
         <thead>
           <tr>
             <th>No</th>
             <th>Jenis Test</th>
             <th>Durasi</th>
-            <th>Waktu Mulai</th>
-            <th>Waktu Akhir</th>
+            <th>Mulai</th>
+            <th>Akhir</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -71,14 +60,40 @@
             <td>{{ item.durasi }}</td>
             <td>{{ item.mulai }}</td>
             <td>{{ item.akhir }}</td>
-            <td>
-              <button class="btn success">📋</button>
-              <button class="btn warning">✏️</button>
-              <button class="btn danger">🗑️</button>
+
+            <!-- ACTION -->
+            <td class="aksi">
+
+              <!-- DETAIL -->
+              <button class="icon-btn detail" title="Detail">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+
+              <!-- EDIT -->
+              <button class="icon-btn edit" title="Edit">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 4h6l3 3-9 9H5v-6l6-6z" />
+                </svg>
+              </button>
+
+              <!-- DELETE -->
+              <button class="icon-btn delete" title="Hapus">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14" />
+                </svg>
+              </button>
+
             </td>
+
           </tr>
         </tbody>
       </table>
+
     </div>
   </div>
 </template>
@@ -86,9 +101,7 @@
 <script setup>
 import { ref, computed } from "vue";
 
-definePageMeta({
-  layout: "dashboard",
-});
+definePageMeta({ layout: "dashboard" });
 
 const router = useRouter();
 
@@ -125,9 +138,11 @@ const data = ref([
 ]);
 
 const filteredData = computed(() => {
-  return data.value.filter((item) =>
-    item.jenis.toLowerCase().includes(search.value.toLowerCase())
-  );
+  return data.value
+    .filter((item) =>
+      item.jenis.toLowerCase().includes(search.value.toLowerCase())
+    )
+    .slice(0, limit.value);
 });
 
 const goBack = () => {
@@ -137,87 +152,84 @@ const goBack = () => {
 
 <style scoped>
 .container {
-  background: #fff;
+  background: #f6f8fb;
   padding: 20px;
-  border-radius: 6px;
 }
 
-/* ===== INFO TABLE ===== */
+/* TITLE */
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+/* INFO */
 .info-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  background: #fff;
 }
 
 .info-table td {
-  border: 1px solid #ccc;
+  border: 1px solid #eee;
   padding: 10px;
 }
 
 .info-table tr td:first-child {
-  width: 200px;
-  font-weight: bold;
-  background: #f5f5f5;
+  width: 180px;
+  font-weight: 600;
+  background: #f9fafb;
 }
 
-.info-table tr td:nth-child(2) {
-  width: 20px;
-  text-align: center;
-}
-
-/* ===== BUTTON ===== */
+/* ACTION */
 .actions {
   margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
 }
 
 .btn {
-  padding: 8px 12px;
+  padding: 8px 14px;
+  border-radius: 6px;
   border: none;
-  margin-right: 5px;
   cursor: pointer;
-  border-radius: 4px;
+  font-size: 13px;
 }
 
 .back {
-  background: orange;
+  background: #f59e0b;
   color: white;
 }
 
 .primary {
-  background: #5bc0de;
+  background: #0ea5e9;
   color: white;
 }
 
-.success {
-  background: #5cb85c;
-  color: white;
+/* CARD */
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.warning {
-  background: #f0ad4e;
-  color: white;
-}
-
-.danger {
-  background: #d9534f;
-  color: white;
-}
-
-/* ===== TABLE ===== */
-.table-wrapper {
-  background: #fff;
-}
-
+/* HEADER */
 .table-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+  align-items: center;
 }
 
 .search {
-  padding: 5px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
+/* TABLE */
 .main-table {
   width: 100%;
   border-collapse: collapse;
@@ -225,11 +237,57 @@ const goBack = () => {
 
 .main-table th,
 .main-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  border: 1px solid #eee;
+  padding: 10px;
+  font-size: 13px;
 }
 
 .main-table th {
-  background: #f5f5f5;
+  background: #f3f4f6;
+}
+
+/* ACTION ICON */
+.aksi {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+/* BUTTON BASE */
+.icon-btn {
+  border: none;
+  padding: 7px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+/* ICON WHITE */
+.icon {
+  width: 16px;
+  height: 16px;
+  color: white;
+}
+
+/* COLORS */
+.detail {
+  background: #f59e0b;
+}
+
+.edit {
+  background: #22c55e;
+}
+
+.delete {
+  background: #ef4444;
+}
+
+/* HOVER */
+.icon-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
 }
 </style>

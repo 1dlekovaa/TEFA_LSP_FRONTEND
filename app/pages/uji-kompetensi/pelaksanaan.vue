@@ -124,9 +124,12 @@ function goToPelaksanaan() {
                 Daftar Asesi
               </button>
 
-              <button class="btn-orange" @click="goToTest(item.id)">
-                Daftar Test
-              </button>
+              <NuxtLink
+  :to="`/uji-kompetisi/daftar-test?id=${item.id}`"
+  class="btn-orange"
+>
+  Daftar Test
+</NuxtLink>
             </td>
           </tr>
         </tbody>
