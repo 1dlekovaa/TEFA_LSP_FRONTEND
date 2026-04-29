@@ -1,11 +1,31 @@
 <template>
-  <div>
-    <h2>Data MUK KKNI Level III Sistem Informatika, Jaringan dan Aplikasi</h2>
+  <div class="p-4">
 
+    <!-- TITLE -->
+    <h1 class="text-2xl font-semibold">MUK Skema</h1>
+
+    <!-- BREADCRUMB -->
+    <div class="text-sm text-gray-500 mb-4 mt-1">
+      <NuxtLink to="/dashboard" class="hover:underline">Dashboard</NuxtLink>
+      <span class="mx-1">/</span>
+      <NuxtLink to="/referensi" class="hover:underline">Referensi</NuxtLink>
+      <span class="mx-1">/</span>
+      <span class="text-gray-700 font-medium">Data Skema</span>
+      <span class="mx-1">/</span>
+      <span class="text-gray-700 font-medium">MUK Skema</span>
+    </div>
+
+    <!-- SUB TITLE -->
+    <h2 class="text-lg font-medium mb-3">
+      Data MUK KKNI Level III Sistem Informatika, Jaringan dan Aplikasi
+    </h2>
+
+    <!-- BACK BUTTON -->
     <NuxtLink to="/referensi" class="btn-back">
       ← Kembali
     </NuxtLink>
 
+    <!-- CARD -->
     <div class="card">
       <table>
         <thead>
@@ -14,16 +34,13 @@
             <th>Kode Dokumen</th>
             <th>Nama Dokumen</th>
             <th>Keterangan</th>
-            <th>Aksi</th>
+            <th class="text-center">Aksi</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr class="section">
-            <td colspan="5">A. PELAKSANAAN ASESMEN</td>
-          </tr>
-
           <tr v-for="(item, i) in data" :key="i">
+
             <td>{{ i + 1 }}</td>
             <td>{{ item.kode }}</td>
             <td>{{ item.nama }}</td>
@@ -32,27 +49,33 @@
               <span class="badge">Blangko</span>
             </td>
 
-            <td>
-              <!-- HIJAU -->
-              <button class="btn green" @click="goDetail(item)">
-                📄
-              </button>
+            <!-- ✅ FIX AKSI SEJAJAR -->
+            <td class="text-center align-middle">
+              <div class="action-box">
 
-              <!-- ORANGE -->
-              <button class="btn orange" @click="download(item)">
-                ⬇
-              </button>
+                <!-- MENU -->
+                <button class="btn green" @click="goMenu(item)">
+                  <AlignJustify class="w-4 h-4" />
+                </button>
+
+                <!-- PRINT -->
+                <button class="btn orange" @click="printPage">
+                  <Printer class="w-4 h-4" />
+                </button>
+
+              </div>
             </td>
-          </tr>
 
+          </tr>
         </tbody>
       </table>
     </div>
+
   </div>
 </template>
 
 <script setup>
-import { navigateTo } from '#app'
+import { Printer, AlignJustify } from 'lucide-vue-next'
 
 definePageMeta({
   layout: "dashboard"
@@ -64,18 +87,19 @@ const data = [
   { kode: 'FR.MAPA.01', nama: 'Merencanakan Aktivitas dan Proses Asesmen' }
 ]
 
-// tombol hijau
-const goDetail = (item) => {
-  navigateTo(`/muk-skema/${item.kode}`)
+// MENU
+const goMenu = (item) => {
+  console.log("menu klik:", item)
 }
 
-// tombol orange
-const download = (item) => {
-  alert(`Download ${item.kode}`)
+// PRINT
+const printPage = () => {
+  window.print()
 }
 </script>
 
 <style scoped>
+
 /* CARD */
 .card {
   background: white;
@@ -89,6 +113,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  table-layout: fixed;
 }
 
 th {
@@ -101,17 +126,20 @@ th, td {
   padding: 12px;
   border-bottom: 1px solid #eee;
   text-align: left;
+  vertical-align: middle; /* 🔥 ini penting */
 }
 
-tr:hover {
-  background: #fafafa;
+/* CENTER */
+.text-center {
+  text-align: center;
 }
 
-/* SECTION */
-.section td {
-  background: #dfe4ea;
-  font-weight: bold;
-  color: #2f3542;
+/* ACTION BOX (INI KUNCI UTAMA BIAR RAPIH) */
+.action-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 /* BADGE */
@@ -126,13 +154,16 @@ tr:hover {
 
 /* BUTTON */
 .btn {
+  width: 32px;
+  height: 32px;
   border: none;
-  padding: 6px 10px;
-  margin-right: 5px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
   transition: 0.2s;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .green {
@@ -168,4 +199,5 @@ tr:hover {
 .btn-back:hover {
   background: #e67e22;
 }
+
 </style>
