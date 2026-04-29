@@ -45,7 +45,7 @@ function changePage(page) {
 }
 
 function goToAsesi(id) {
-  router.push(`/uji-kompetensi/asesi/${id}`)
+  router.push(`/uji-kompetensi/daftarasesi/${id}`)
 }
 
 function goToTest(id) {
