@@ -83,7 +83,7 @@ const handleLogout = () => {
         <div class="overflow-hidden transition-all duration-300" :class="openMenus.referensi ? 'max-h-96' : 'max-h-0'">
           <NuxtLink to="/referensi/asesor" class="block ml-6 py-2 rounded transition-all duration-200 hover:bg-white/20"> Data Asesor </NuxtLink>
           <NuxtLink to="/referensi/asesi" class="block ml-6 py-2 rounded transition-all duration-200 hover:bg-white/20"> Data Asesi </NuxtLink>
-          <NuxtLink to="/referensi/akun" class="block ml-6 py-2 rounded transition-all duration-200 hover:bg-white/20"> Data Akun </NuxtLink>
+          <NuxtLink to="/referensi/akun" class="block ml-6 py-2 rounded transition-all duration-200 hover:bg-white/20"> Data User </NuxtLink>
           <NuxtLink to="/referensi/tuk" class="block ml-6 py-2 rounded transition-all duration-200 hover:bg-white/20"> Data TUK </NuxtLink>
         </div>
       </div>
@@ -131,19 +131,6 @@ const handleLogout = () => {
         <NuxtLink to="/uji/apl02" class="block ml-6 py-2 hover:bg-white/20 rounded"> Pelaksanaan Ujikom </NuxtLink>
 
         <NuxtLink to="/uji/penilaian" class="block ml-6 py-2 hover:bg-white/20 rounded"> Kerahasiaan (AK-01)</NuxtLink>
-      </div>
-    </div>
-
-    <!-- PENGATURAN -->
-    <div>
-      <button @click="toggleMenu('pengaturan')" class="flex justify-between w-full px-4 py-2 hover:bg-white/20 rounded">
-        Pengaturan
-
-        <ChevronRight class="w-4 transition duration-300" :class="openMenu === 'pengaturan' ? 'rotate-90' : ''" />
-      </button>
-
-      <div class="overflow-hidden transition-all duration-300" :class="openMenu === 'pengaturan' ? 'max-h-40' : 'max-h-0'">
-        <NuxtLink to="/pengaturan/user" class="block ml-6 py-2 hover:bg-white/20 rounded"> User </NuxtLink>
       </div>
     </div>
   </aside>

@@ -26,7 +26,6 @@ const normalizeAsesi = (item: any): Asesi => ({
 const toBackendPayload = (data: Asesi) => ({
   no_peserta: data.no_peserta,
   nama_lengkap: data.nama_lengkap,
-  nama: data.nama_lengkap,
   kelas: data.kelas,
   tahun_aktif_id: data.tahun_aktif_id,
   tahun_aktif: data.tahun_aktif_id,
@@ -82,7 +81,6 @@ export const asesiService = {
       const formData = new FormData()
       formData.append('no_peserta', payload.no_peserta)
       formData.append('nama_lengkap', payload.nama_lengkap)
-      formData.append('nama', payload.nama)
       formData.append('kelas', payload.kelas)
       formData.append('tahun_aktif_id', payload.tahun_aktif_id.toString())
       formData.append('tahun_aktif', payload.tahun_aktif.toString())
@@ -107,7 +105,6 @@ export const asesiService = {
       const formData = new FormData()
       formData.append('no_peserta', payload.no_peserta)
       formData.append('nama_lengkap', payload.nama_lengkap)
-      formData.append('nama', payload.nama)
       formData.append('kelas', payload.kelas)
       formData.append('tahun_aktif_id', payload.tahun_aktif_id.toString())
       formData.append('tahun_aktif', payload.tahun_aktif.toString())
