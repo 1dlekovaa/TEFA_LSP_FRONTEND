@@ -26,6 +26,7 @@
         <div>
           Show
           <select v-model="limit">
+            <option :value="5">5</option>
             <option :value="10">10</option>
             <option :value="25">25</option>
           </select>
@@ -54,8 +55,17 @@
         </thead>
 
         <tbody>
-          <tr v-for="(item, i) in filteredData" :key="i">
-            <td>{{ i + 1 }}</td>
+
+          <!-- EMPTY -->
+          <tr v-if="paginatedData.length === 0">
+            <td colspan="6" style="text-align:center; padding:20px;">
+              Data tidak ditemukan
+            </td>
+          </tr>
+
+          <!-- DATA -->
+          <tr v-for="(item, i) in paginatedData" :key="i">
+            <td>{{ (currentPage - 1) * limit + i + 1 }}</td>
             <td>{{ item.jenis }}</td>
             <td>{{ item.durasi }}</td>
             <td>{{ item.mulai }}</td>
@@ -67,39 +77,114 @@
               <!-- DETAIL -->
               <button class="icon-btn detail" title="Detail">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               </button>
 
               <!-- EDIT -->
               <button class="icon-btn edit" title="Edit">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M11 4h6l3 3-9 9H5v-6l6-6z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 4h6l3 3-9 9H5v-6l6-6z"
+                  />
                 </svg>
               </button>
 
               <!-- DELETE -->
               <button class="icon-btn delete" title="Hapus">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"
+                  />
                 </svg>
               </button>
 
             </td>
-
           </tr>
+
         </tbody>
       </table>
+
+      <!-- FOOTER -->
+      <div class="pagination-wrapper">
+
+        <!-- INFO -->
+        <div class="showing">
+          {{ showingText }}
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination">
+
+          <!-- FIRST -->
+          <button
+            @click="goToPage(1)"
+            :disabled="currentPage === 1"
+            class="page-btn"
+          >
+            First
+          </button>
+
+          <!-- PREV -->
+          <button
+            @click="prevPage"
+            :disabled="currentPage === 1"
+            class="page-btn"
+          >
+            Prev
+          </button>
+
+          <!-- NUMBER -->
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'page-btn',
+              currentPage === page ? 'active-page' : ''
+            ]"
+          >
+            {{ page }}
+          </button>
+
+          <!-- NEXT -->
+          <button
+            @click="nextPage"
+            :disabled="currentPage === totalPages"
+            class="page-btn"
+          >
+            Next
+          </button>
+
+          <!-- LAST -->
+          <button
+            @click="goToPage(totalPages)"
+            :disabled="currentPage === totalPages"
+            class="page-btn"
+          >
+            Last
+          </button>
+
+        </div>
+      </div>
 
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 definePageMeta({ layout: "dashboard" });
 
@@ -114,7 +199,8 @@ const paket = ref({
 });
 
 const search = ref("");
-const limit = ref(10);
+const limit = ref(5);
+const currentPage = ref(1);
 
 const data = ref([
   {
@@ -135,14 +221,80 @@ const data = ref([
     mulai: "2023-03-29 15:42:00",
     akhir: "2023-04-14 23:59:00",
   },
+  {
+    jenis: "Wawancara",
+    durasi: "01:30:00",
+    mulai: "2023-04-01 08:00:00",
+    akhir: "2023-04-01 10:00:00",
+  },
+  {
+    jenis: "Essay",
+    durasi: "03:00:00",
+    mulai: "2023-04-02 09:00:00",
+    akhir: "2023-04-02 12:00:00",
+  },
+  {
+    jenis: "Presentasi",
+    durasi: "02:30:00",
+    mulai: "2023-04-03 13:00:00",
+    akhir: "2023-04-03 15:30:00",
+  },
 ]);
 
+// FILTER
 const filteredData = computed(() => {
-  return data.value
-    .filter((item) =>
-      item.jenis.toLowerCase().includes(search.value.toLowerCase())
-    )
-    .slice(0, limit.value);
+  return data.value.filter((item) =>
+    item.jenis.toLowerCase().includes(search.value.toLowerCase())
+  );
+});
+
+// TOTAL PAGE
+const totalPages = computed(() => {
+  return Math.ceil(filteredData.value.length / limit.value);
+});
+
+// PAGINATED DATA
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * limit.value;
+  const end = start + limit.value;
+
+  return filteredData.value.slice(start, end);
+});
+
+// SHOWING TEXT
+const showingText = computed(() => {
+  const total = filteredData.value.length;
+
+  if (total === 0) {
+    return "Showing 0 to 0 of 0 entries";
+  }
+
+  const start = (currentPage.value - 1) * limit.value + 1;
+  const end = Math.min(currentPage.value * limit.value, total);
+
+  return `Showing ${start} to ${end} of ${total} entries`;
+});
+
+// PAGINATION FUNCTION
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+// RESET PAGE
+watch([search, limit], () => {
+  currentPage.value = 1;
 });
 
 const goBack = () => {
@@ -265,7 +417,12 @@ const goBack = () => {
   transition: 0.2s;
 }
 
-/* ICON WHITE */
+.icon-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+
+/* ICON */
 .icon {
   width: 16px;
   height: 16px;
@@ -285,9 +442,45 @@ const goBack = () => {
   background: #ef4444;
 }
 
-/* HOVER */
-.icon-btn:hover {
-  transform: scale(1.1);
-  opacity: 0.9;
+/* PAGINATION */
+.pagination-wrapper {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.showing {
+  font-size: 13px;
+  color: #666;
+}
+
+.pagination {
+  display: flex;
+  gap: 5px;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.page-btn:hover {
+  background: #f3f4f6;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.active-page {
+  background: #0ea5e9;
+  color: white;
+  border-color: #0ea5e9;
 }
 </style>
