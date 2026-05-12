@@ -1,6 +1,5 @@
 <template>
   <div class="p-4">
-
     <!-- TITLE -->
     <h1 class="text-2xl font-semibold">MUK Skema</h1>
 
@@ -16,14 +15,10 @@
     </div>
 
     <!-- SUB TITLE -->
-    <h2 class="text-lg font-medium mb-3">
-      Data MUK KKNI Level III Sistem Informatika, Jaringan dan Aplikasi
-    </h2>
+    <h2 class="text-lg font-medium mb-3">Data MUK KKNI Level III Sistem Informatika, Jaringan dan Aplikasi</h2>
 
     <!-- BACK BUTTON -->
-    <NuxtLink to="/referensi" class="btn-back">
-      ← Kembali
-    </NuxtLink>
+    <NuxtLink to="/referensi" class="btn-back"> ← Kembali </NuxtLink>
 
     <!-- CARD -->
     <div class="card">
@@ -40,7 +35,6 @@
 
         <tbody>
           <tr v-for="(item, i) in data" :key="i">
-
             <td>{{ i + 1 }}</td>
             <td>{{ item.kode }}</td>
             <td>{{ item.nama }}</td>
@@ -52,60 +46,57 @@
             <!-- ✅ FIX AKSI SEJAJAR -->
             <td class="text-center align-middle">
               <div class="action-box">
-
                 <!-- MENU -->
-                <button class="btn green" @click="goMenu(item)">
-                  <AlignJustify class="w-4 h-4" />
-                </button>
+                <NuxtLink :to="`/mukskema/${item.kode}`" class="hover:text-blue-600">
+                  <button class="btn green">
+                    <AlignJustify class="w-4 h-4" />
+                  </button>
+                </NuxtLink>
 
                 <!-- PRINT -->
                 <button class="btn orange" @click="printPage">
                   <Printer class="w-4 h-4" />
                 </button>
-
               </div>
             </td>
-
           </tr>
         </tbody>
       </table>
     </div>
-
   </div>
 </template>
 
 <script setup>
-import { Printer, AlignJustify } from 'lucide-vue-next'
+import { Printer, AlignJustify } from "lucide-vue-next";
 
 definePageMeta({
-  layout: "dashboard"
-})
+  layout: "dashboard",
+});
 
 const data = [
-  { kode: 'FR.APL.01', nama: 'Permohonan Sertifikasi Kompetensi' },
-  { kode: 'FR.APL.02', nama: 'Asesmen Mandiri' },
-  { kode: 'FR.MAPA.01', nama: 'Merencanakan Aktivitas dan Proses Asesmen' }
-]
+  { kode: "FR.APL.01", nama: "Permohonan Sertifikasi Kompetensi" },
+  { kode: "FR.APL.02", nama: "Asesmen Mandiri" },
+  { kode: "FR.MAPA.01", nama: "Merencanakan Aktivitas dan Proses Asesmen" },
+];
 
 // MENU
 const goMenu = (item) => {
-  console.log("menu klik:", item)
-}
+  router.push(`/referensi/unit/${item.kode}/elemen`);
+};
 
 // PRINT
 const printPage = () => {
-  window.print()
-}
+  window.print();
+};
 </script>
 
 <style scoped>
-
 /* CARD */
 .card {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 /* TABLE */
@@ -122,7 +113,8 @@ th {
   font-weight: 600;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   border-bottom: 1px solid #eee;
   text-align: left;
@@ -199,5 +191,4 @@ th, td {
 .btn-back:hover {
   background: #e67e22;
 }
-
 </style>
