@@ -54,7 +54,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="(item, i) in filteredData" :key="i">
+          <tr v-for="(item, i) in filteredData" :key="item.id">
             <td>{{ i + 1 }}</td>
             <td>{{ item.jenis }}</td>
             <td>{{ item.durasi }}</td>
@@ -64,32 +64,63 @@
             <!-- ACTION -->
             <td class="aksi">
 
-              <!-- DETAIL -->
-              <button class="icon-btn detail" title="Detail">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+              <NuxtLink
+  :to="{
+    path: '/uji-kompetisi/list-test',
+    query: { id: item.id }
+  }"
+  class="icon-btn detail"
+>
+  <svg
+    class="icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M4 6h16M4 12h16M4 18h16"
+    />
+  </svg>
+</NuxtLink>
 
               <!-- EDIT -->
               <button class="icon-btn edit" title="Edit">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M11 4h6l3 3-9 9H5v-6l6-6z" />
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 4h6l3 3-9 9H5v-6l6-6z"
+                  />
                 </svg>
               </button>
 
               <!-- DELETE -->
               <button class="icon-btn delete" title="Hapus">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14" />
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14"
+                  />
                 </svg>
               </button>
 
             </td>
-
           </tr>
         </tbody>
       </table>
@@ -101,10 +132,15 @@
 <script setup>
 import { ref, computed } from "vue";
 
-definePageMeta({ layout: "dashboard" });
+definePageMeta({
+  layout: "dashboard",
+});
 
 const router = useRouter();
 
+/* =========================
+   DATA
+========================= */
 const paket = ref({
   nama: "PAKET 2 SIJ SMKN 1 GARUT",
   judul:
@@ -118,18 +154,21 @@ const limit = ref(10);
 
 const data = ref([
   {
+    id: 1,
     jenis: "Praktik Demonstrasi",
     durasi: "04:00:00",
     mulai: "2023-03-27 12:30:00",
     akhir: "2023-03-31 23:59:00",
   },
   {
+    id: 2,
     jenis: "Soal Pilihan Ganda",
     durasi: "02:00:00",
     mulai: "2023-03-29 09:00:00",
     akhir: "2023-04-14 23:59:00",
   },
   {
+    id: 3,
     jenis: "Praktik Demonstrasi",
     durasi: "12:00:00",
     mulai: "2023-03-29 15:42:00",
@@ -137,6 +176,9 @@ const data = ref([
   },
 ]);
 
+/* =========================
+   FILTER
+========================= */
 const filteredData = computed(() => {
   return data.value
     .filter((item) =>
@@ -145,6 +187,9 @@ const filteredData = computed(() => {
     .slice(0, limit.value);
 });
 
+/* =========================
+   NAVIGATION
+========================= */
 const goBack = () => {
   router.back();
 };
@@ -156,14 +201,12 @@ const goBack = () => {
   padding: 20px;
 }
 
-/* TITLE */
 .title {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 15px;
-}
+} 
 
-/* INFO */
 .info-table {
   width: 100%;
   border-collapse: collapse;
@@ -182,7 +225,6 @@ const goBack = () => {
   background: #f9fafb;
 }
 
-/* ACTION */
 .actions {
   margin-bottom: 15px;
   display: flex;
@@ -207,7 +249,6 @@ const goBack = () => {
   color: white;
 }
 
-/* CARD */
 .card {
   background: white;
   border-radius: 10px;
@@ -215,7 +256,6 @@ const goBack = () => {
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* HEADER */
 .table-header {
   display: flex;
   justify-content: space-between;
@@ -229,7 +269,6 @@ const goBack = () => {
   border-radius: 6px;
 }
 
-/* TABLE */
 .main-table {
   width: 100%;
   border-collapse: collapse;
@@ -246,33 +285,30 @@ const goBack = () => {
   background: #f3f4f6;
 }
 
-/* ACTION ICON */
 .aksi {
   display: flex;
   gap: 6px;
   justify-content: center;
 }
 
-/* BUTTON BASE */
 .icon-btn {
   border: none;
   padding: 7px;
   border-radius: 6px;
   cursor: pointer;
-  display: flex;
+  transition: 0.2s;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: 0.2s;
+  text-decoration: none;
 }
 
-/* ICON WHITE */
 .icon {
   width: 16px;
   height: 16px;
   color: white;
 }
 
-/* COLORS */
 .detail {
   background: #f59e0b;
 }
@@ -285,7 +321,6 @@ const goBack = () => {
   background: #ef4444;
 }
 
-/* HOVER */
 .icon-btn:hover {
   transform: scale(1.1);
   opacity: 0.9;
