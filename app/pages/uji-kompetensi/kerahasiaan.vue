@@ -246,7 +246,7 @@ input {
 }
 
 select {
-  padding: 5px;
+  padding: 5px; 
 }
 
 .custom-table {
