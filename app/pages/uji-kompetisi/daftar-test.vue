@@ -6,16 +6,40 @@
 
     <!-- INFO -->
     <table class="info-table">
-      <tr><td>Nama Paket</td><td>:</td><td>{{ paket.nama }}</td></tr>
-      <tr><td>Judul Skema</td><td>:</td><td>{{ paket.judul }}</td></tr>
-      <tr><td>Jadwal Ujikom</td><td>:</td><td>{{ paket.tanggal }}</td></tr>
-      <tr><td>TUK</td><td>:</td><td>{{ paket.tuk }}</td></tr>
+      <tr>
+        <td>Nama Paket</td>
+        <td>:</td>
+        <td>{{ paket.nama }}</td>
+      </tr>
+
+      <tr>
+        <td>Judul Skema</td>
+        <td>:</td>
+        <td>{{ paket.judul }}</td>
+      </tr>
+
+      <tr>
+        <td>Jadwal Ujikom</td>
+        <td>:</td>
+        <td>{{ paket.tanggal }}</td>
+      </tr>
+
+      <tr>
+        <td>TUK</td>
+        <td>:</td>
+        <td>{{ paket.tuk }}</td>
+      </tr>
     </table>
 
     <!-- ACTION -->
     <div class="actions">
-      <button class="btn back" @click="goBack">← Kembali</button>
-      <button class="btn primary">Jadwalkan Test</button>
+      <button class="btn back" @click="goBack">
+        ← Kembali
+      </button>
+
+      <button class="btn primary">
+        Jadwalkan Test
+      </button>
     </div>
 
     <!-- CARD -->
@@ -23,9 +47,11 @@
 
       <!-- HEADER -->
       <div class="table-header">
+
         <div>
           Show
           <select v-model="limit">
+            <option :value="5">5</option>
             <option :value="10">10</option>
             <option :value="25">25</option>
           </select>
@@ -42,6 +68,7 @@
 
       <!-- TABLE -->
       <table class="main-table">
+
         <thead>
           <tr>
             <th>No</th>
@@ -54,8 +81,23 @@
         </thead>
 
         <tbody>
-          <tr v-for="(item, i) in filteredData" :key="item.id">
-            <td>{{ i + 1 }}</td>
+
+          <!-- EMPTY -->
+          <tr v-if="paginatedData.length === 0">
+            <td colspan="6" class="empty">
+              Data tidak ditemukan
+            </td>
+          </tr>
+
+          <!-- DATA -->
+          <tr
+            v-for="(item, i) in paginatedData"
+            :key="item.id"
+          >
+            <td>
+              {{ (currentPage - 1) * limit + i + 1 }}
+            </td>
+
             <td>{{ item.jenis }}</td>
             <td>{{ item.durasi }}</td>
             <td>{{ item.mulai }}</td>
@@ -64,27 +106,28 @@
             <!-- ACTION -->
             <td class="aksi">
 
+              <!-- DETAIL -->
               <NuxtLink
-  :to="{
-    path: '/uji-kompetisi/list-test',
-    query: { id: item.id }
-  }"
-  class="icon-btn detail"
->
-  <svg
-    class="icon"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M4 6h16M4 12h16M4 18h16"
-    />
-  </svg>
-</NuxtLink>
+                :to="{
+                  path: '/uji-kompetisi/list-test',
+                  query: { id: item.id }
+                }"
+                class="icon-btn detail"
+              >
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </NuxtLink>
 
               <!-- EDIT -->
               <button class="icon-btn edit" title="Edit">
@@ -122,15 +165,56 @@
 
             </td>
           </tr>
+
         </tbody>
       </table>
+
+      <!-- PAGINATION -->
+      <div class="pagination-wrapper">
+
+        <div class="showing">
+          {{ showingText }}
+        </div>
+
+        <div class="pagination">
+
+          <button
+            class="page-btn"
+            @click="prevPage"
+            :disabled="currentPage === 1"
+          >
+            Prev
+          </button>
+
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'page-btn',
+              currentPage === page ? 'active-page' : ''
+            ]"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="page-btn"
+            @click="nextPage"
+            :disabled="currentPage === totalPages"
+          >
+            Next
+          </button>
+
+        </div>
+      </div>
 
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 definePageMeta({
   layout: "dashboard",
@@ -138,9 +222,6 @@ definePageMeta({
 
 const router = useRouter();
 
-/* =========================
-   DATA
-========================= */
 const paket = ref({
   nama: "PAKET 2 SIJ SMKN 1 GARUT",
   judul:
@@ -150,7 +231,8 @@ const paket = ref({
 });
 
 const search = ref("");
-const limit = ref(10);
+const limit = ref(5);
+const currentPage = ref(1);
 
 const data = ref([
   {
@@ -176,20 +258,63 @@ const data = ref([
   },
 ]);
 
-/* =========================
-   FILTER
-========================= */
 const filteredData = computed(() => {
-  return data.value
-    .filter((item) =>
-      item.jenis.toLowerCase().includes(search.value.toLowerCase())
-    )
-    .slice(0, limit.value);
+  return data.value.filter((item) =>
+    item.jenis
+      .toLowerCase()
+      .includes(search.value.toLowerCase())
+  );
 });
 
-/* =========================
-   NAVIGATION
-========================= */
+const totalPages = computed(() => {
+  return Math.ceil(filteredData.value.length / limit.value);
+});
+
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * limit.value;
+  const end = start + limit.value;
+
+  return filteredData.value.slice(start, end);
+});
+
+const showingText = computed(() => {
+  const total = filteredData.value.length;
+
+  if (total === 0) {
+    return "Showing 0 to 0 of 0 entries";
+  }
+
+  const start =
+    (currentPage.value - 1) * limit.value + 1;
+
+  const end = Math.min(
+    currentPage.value * limit.value,
+    total
+  );
+
+  return `Showing ${start} to ${end} of ${total} entries`;
+});
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+watch([search, limit], () => {
+  currentPage.value = 1;
+});
+
 const goBack = () => {
   router.back();
 };
@@ -205,7 +330,7 @@ const goBack = () => {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 15px;
-} 
+}
 
 .info-table {
   width: 100%;
@@ -236,7 +361,6 @@ const goBack = () => {
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  font-size: 13px;
 }
 
 .back {
@@ -253,14 +377,12 @@ const goBack = () => {
   background: white;
   border-radius: 10px;
   padding: 15px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .table-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-  align-items: center;
+  margin-bottom: 15px;
 }
 
 .search {
@@ -285,10 +407,15 @@ const goBack = () => {
   background: #f3f4f6;
 }
 
+.empty {
+  text-align: center;
+  padding: 20px;
+}
+
 .aksi {
   display: flex;
-  gap: 6px;
   justify-content: center;
+  gap: 6px;
 }
 
 .icon-btn {
@@ -296,11 +423,15 @@ const goBack = () => {
   padding: 7px;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.2s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
+}
+
+.icon-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
 }
 
 .icon {
@@ -321,8 +452,43 @@ const goBack = () => {
   background: #ef4444;
 }
 
-.icon-btn:hover {
-  transform: scale(1.1);
-  opacity: 0.9;
+.pagination-wrapper {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.showing {
+  font-size: 13px;
+  color: #666;
+}
+
+.pagination {
+  display: flex;
+  gap: 5px;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.page-btn:hover {
+  background: #f3f4f6;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.active-page {
+  background: #0ea5e9;
+  color: white;
+  border-color: #0ea5e9;
 }
 </style>

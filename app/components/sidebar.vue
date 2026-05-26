@@ -78,7 +78,7 @@ const toggleMenu = (menu) => {
       </button>
 
       <div class="overflow-hidden transition-all duration-300" :class="openMenu === 'pengaturan' ? 'max-h-40' : 'max-h-0'">
-        <NuxtLink to="/pengaturan/user" class="block ml-6 py-2 hover:bg-white/20 rounded"> User </NuxtLink>
+        <NuxtLink to="/pengaturan/profile" class="block ml-6 py-2 hover:bg-white/20 rounded"> Profile </NuxtLink>
       </div>
     </div>
   </aside>
