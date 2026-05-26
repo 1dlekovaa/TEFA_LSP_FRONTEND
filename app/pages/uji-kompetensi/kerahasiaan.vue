@@ -1,9 +1,12 @@
 <script setup>
 import { ref, computed } from "vue"
+import { useRouter } from "vue-router" 
 
 definePageMeta({
   layout: "dashboard"
 })
+
+const router = useRouter() 
 
 /* ================= DATA ================= */
 const dataAsesi = ref([
@@ -40,7 +43,8 @@ const paginated = computed(() => {
 
 /* ================= ACTION ================= */
 const proses = (item) => {
-  alert("Proses: " + item.nama)
+  // 🌟 3. Ubah alert menjadi router.push menuju file halaman form kamu
+  router.push('/uji-kompetensi/kerahasiaan-form')
 }
 </script>
 
