@@ -65,7 +65,7 @@ const toggleMenu = (menu) => {
           Pelaksanaan Ujikom
         </NuxtLink>
 
-        <NuxtLink to="/uji/penilaian" class="block ml-6 py-2 hover:bg-white/20 rounded"> Kerahasiaan (AK-01)</NuxtLink>
+        <NuxtLink to="/uji-kompetensi/kerahasiaan" class="block ml-6 py-2 hover:bg-white/20 rounded"> Kerahasiaan (AK-01)</NuxtLink>
       </div>
     </div>
 

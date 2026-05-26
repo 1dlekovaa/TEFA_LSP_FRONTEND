@@ -178,11 +178,11 @@ function goToPelaksanaan() {
 
 .breadcrumb {
   font-size: 14px;
-  color: #555;
+  color: #000000;
 }
 
 .link {
-  color: #2d7ef7;
+  color: #000000;
   cursor: pointer;
 }
 
