@@ -236,7 +236,7 @@ onMounted(() => {
 const setSignature = () => {
   alert('Silakan tanda tangan pada area yang tersedia')
 }
-
+ 
 const clearSignature = () => {
   signaturePad.clear()
 }
