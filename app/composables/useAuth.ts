@@ -2,7 +2,7 @@ interface AuthUser {
   id: number
   name: string
   username: string
-  role: 'admin' | 'asesor' | 'asesi' | 'validator'
+  role: 'administrator' | 'asesor' | 'asesi' | 'validator'
 }
 
 export function useAuth() {

@@ -8,9 +8,9 @@ definePageMeta({
 
 const api = useApi();
 
-const levelOptions = ["admin", "asesor", "asesi", "validator"];
+const levelOptions = ["administrator", "asesor", "asesi", "validator"];
 const levelLabel = {
-  admin: "Administrator",
+  administrator: "Administrator",
   asesor: "Asesor",
   asesi: "Asesi",
   validator: "Validator",
@@ -34,7 +34,7 @@ async function fetchUsers() {
   try {
     const response = await api("/users", {
       query: {
-        role: roleFilter.value || undefined,
+        level: roleFilter.value || undefined,
         per_page: perPage.value,
         page: currentPage.value,
       },
@@ -60,7 +60,8 @@ const filteredData = computed(() => {
   const q = search.value.toLowerCase();
   return users.value.filter(
     (u) =>
-      u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q)
+      u.nama_lengkap.toLowerCase().includes(q) ||
+      u.username.toLowerCase().includes(q)
   );
 });
 
@@ -77,9 +78,9 @@ const changePage = (page) => {
 const showFormModal = ref(false);
 const editingUser = ref(null);
 const form = reactive({
-  name: "",
+  nama_lengkap: "",
   username: "",
-  role: "asesi",
+  level: "asesi",
   status: "aktif",
   password: "",
 });
@@ -88,9 +89,9 @@ const saving = ref(false);
 
 function openCreateModal() {
   editingUser.value = null;
-  form.name = "";
+  form.nama_lengkap = "";
   form.username = "";
-  form.role = "asesi";
+  form.level = "asesi";
   form.status = "aktif";
   form.password = "";
   formError.value = "";
@@ -99,9 +100,9 @@ function openCreateModal() {
 
 function openEditModal(user) {
   editingUser.value = user;
-  form.name = user.name;
+  form.nama_lengkap = user.nama_lengkap;
   form.username = user.username;
-  form.role = user.role;
+  form.level = user.level;
   form.status = user.status;
   form.password = "";
   formError.value = "";
@@ -135,7 +136,7 @@ async function submitForm() {
 
 // DELETE
 async function deleteUser(user) {
-  if (!confirm(`Hapus pengguna "${user.name}"?`)) return;
+  if (!confirm(`Hapus pengguna "${user.nama_lengkap}"?`)) return;
   try {
     await api(`/users/${user.id}`, { method: "DELETE" });
     await fetchUsers();
@@ -253,9 +254,9 @@ async function submitReset() {
             <td class="p-2 border">
               {{ (currentPage - 1) * perPage + index + 1 }}
             </td>
-            <td class="p-2 border">{{ item.name }}</td>
+            <td class="p-2 border">{{ item.nama_lengkap }}</td>
             <td class="p-2 border">{{ item.username }}</td>
-            <td class="p-2 border">{{ levelLabel[item.role] || item.role }}</td>
+            <td class="p-2 border">{{ levelLabel[item.level] || item.level }}</td>
             <td class="p-2 border text-center">
               <span
                 class="px-2 py-0.5 rounded text-xs"
@@ -337,7 +338,7 @@ async function submitReset() {
         <form @submit.prevent="submitForm" class="space-y-3">
           <div>
             <label class="text-sm text-gray-700">Nama Lengkap</label>
-            <input v-model="form.name" required class="w-full border rounded px-3 py-2 mt-1" />
+            <input v-model="form.nama_lengkap" required class="w-full border rounded px-3 py-2 mt-1" />
           </div>
           <div>
             <label class="text-sm text-gray-700">Username</label>
@@ -345,7 +346,7 @@ async function submitReset() {
           </div>
           <div>
             <label class="text-sm text-gray-700">Level Pengguna</label>
-            <select v-model="form.role" required class="w-full border rounded px-3 py-2 mt-1">
+            <select v-model="form.level" required class="w-full border rounded px-3 py-2 mt-1">
               <option v-for="r in levelOptions" :key="r" :value="r">
                 {{ levelLabel[r] }}
               </option>
@@ -400,7 +401,7 @@ async function submitReset() {
     >
       <div class="bg-white rounded-lg p-6 w-full max-w-sm">
         <h2 class="text-lg font-semibold mb-4">
-          Reset Password - {{ resetTarget?.name }}
+          Reset Password - {{ resetTarget?.nama_lengkap }}
         </h2>
 
         <form @submit.prevent="submitReset" class="space-y-3">

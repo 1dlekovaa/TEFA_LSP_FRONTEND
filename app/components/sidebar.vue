@@ -10,7 +10,7 @@ const toggleMenu = (menu) => {
   openMenu.value = openMenu.value === menu ? null : menu;
 };
 
-const isAdmin = computed(() => user.value?.role === "admin");
+const isAdmin = computed(() => user.value?.role === "administrator");
 const isAsesor = computed(() => user.value?.role === "asesor");
 
 const handleLogout = async () => {

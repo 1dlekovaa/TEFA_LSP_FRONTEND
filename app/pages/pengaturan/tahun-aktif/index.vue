@@ -12,17 +12,13 @@ const items = ref([]);
 const loading = ref(false);
 const errorMessage = ref("");
 const search = ref("");
-const currentPage = ref(1);
-const lastPage = ref(1);
 
-async function fetchData(page = 1) {
+async function fetchData() {
   loading.value = true;
   errorMessage.value = "";
   try {
-    const response = await api("/tahun-aktif", { query: { page } });
+    const response = await api("/tahun-aktif");
     items.value = response.data;
-    currentPage.value = response.pagination.current_page;
-    lastPage.value = response.pagination.last_page;
   } catch (e) {
     errorMessage.value = e?.data?.message || "Gagal mengambil data tahun aktif";
   } finally {
@@ -39,11 +35,6 @@ const filteredData = computed(() => {
     (i) => i.tahun.toLowerCase().includes(q) || i.semester.toLowerCase().includes(q)
   );
 });
-
-const changePage = (page) => {
-  if (page < 1 || page > lastPage.value) return;
-  fetchData(page);
-};
 
 // MODAL CREATE / EDIT
 const showFormModal = ref(false);
@@ -79,7 +70,7 @@ async function submitForm() {
       await api("/tahun-aktif", { method: "POST", body: form });
     }
     showFormModal.value = false;
-    await fetchData(currentPage.value);
+    await fetchData();
   } catch (e) {
     formError.value = e?.data?.message || "Gagal menyimpan tahun aktif";
   } finally {
@@ -89,8 +80,8 @@ async function submitForm() {
 
 async function activate(item) {
   try {
-    await api(`/tahun-aktif/${item.id}/activate`, { method: "POST" });
-    await fetchData(currentPage.value);
+    await api(`/tahun-aktif/${item.id}/set-active`, { method: "PUT" });
+    await fetchData();
   } catch (e) {
     alert(e?.data?.message || "Gagal mengaktifkan tahun aktif");
   }
@@ -100,7 +91,7 @@ async function deleteItem(item) {
   if (!confirm(`Hapus tahun aktif "${item.tahun} - ${item.semester}"?`)) return;
   try {
     await api(`/tahun-aktif/${item.id}`, { method: "DELETE" });
-    await fetchData(currentPage.value);
+    await fetchData();
   } catch (e) {
     alert(e?.data?.message || "Gagal menghapus tahun aktif");
   }
@@ -166,20 +157,6 @@ async function deleteItem(item) {
       </table>
     </div>
 
-    <div class="flex justify-center gap-2 mt-4">
-      <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="px-3 py-1 border rounded">Prev</button>
-      <button
-        v-for="page in lastPage"
-        :key="page"
-        @click="changePage(page)"
-        class="px-3 py-1 border rounded"
-        :class="currentPage === page ? 'bg-blue-500 text-white' : ''"
-      >
-        {{ page }}
-      </button>
-      <button @click="changePage(currentPage + 1)" :disabled="currentPage === lastPage" class="px-3 py-1 border rounded">Next</button>
-    </div>
-
     <!-- MODAL CREATE / EDIT -->
     <div v-if="showFormModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg p-6 w-full max-w-sm">
@@ -193,7 +170,11 @@ async function deleteItem(item) {
           </div>
           <div>
             <label class="text-sm text-gray-700">Semester</label>
-            <input v-model="form.semester" required placeholder="Ganjil / Genap" class="w-full border rounded px-3 py-2 mt-1" />
+            <select v-model="form.semester" required class="w-full border rounded px-3 py-2 mt-1">
+              <option value="">-- Pilih Semester --</option>
+              <option value="Ganjil">Ganjil</option>
+              <option value="Genap">Genap</option>
+            </select>
           </div>
           <label v-if="!editing" class="flex items-center gap-2 text-sm text-gray-700">
             <input type="checkbox" v-model="form.is_active" />

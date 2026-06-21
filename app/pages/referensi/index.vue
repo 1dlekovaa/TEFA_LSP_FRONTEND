@@ -7,7 +7,7 @@ definePageMeta({
 
 const api = useApi();
 const { user } = useAuth();
-const isAdmin = computed(() => user.value?.role === "admin");
+const isAdmin = computed(() => user.value?.role === "administrator");
 
 const jenisOptions = ["KKNI", "okupasi", "klaster"];
 
@@ -61,10 +61,7 @@ const editing = ref(null);
 const form = reactive({
   kode_skema: "",
   nama_skema: "",
-  jenjang: "",
   jenis_skema: "KKNI",
-  deskripsi: "",
-  status: "aktif",
 });
 const fileSkema = ref(null);
 const formError = ref("");
@@ -74,10 +71,7 @@ function openCreateModal() {
   editing.value = null;
   form.kode_skema = "";
   form.nama_skema = "";
-  form.jenjang = "";
   form.jenis_skema = "KKNI";
-  form.deskripsi = "";
-  form.status = "aktif";
   fileSkema.value = null;
   formError.value = "";
   showFormModal.value = true;
@@ -87,10 +81,7 @@ function openEditModal(item) {
   editing.value = item;
   form.kode_skema = item.kode_skema;
   form.nama_skema = item.nama_skema;
-  form.jenjang = item.jenjang;
   form.jenis_skema = item.jenis_skema;
-  form.deskripsi = item.deskripsi;
-  form.status = item.status;
   fileSkema.value = null;
   formError.value = "";
   showFormModal.value = true;
@@ -286,10 +277,6 @@ async function deleteSkema(item) {
             <input v-model="form.nama_skema" required class="w-full border rounded px-3 py-2 mt-1" />
           </div>
           <div>
-            <label class="text-sm text-gray-700">Jenjang</label>
-            <input v-model="form.jenjang" required class="w-full border rounded px-3 py-2 mt-1" />
-          </div>
-          <div>
             <label class="text-sm text-gray-700">Jenis Skema</label>
             <select v-model="form.jenis_skema" required class="w-full border rounded px-3 py-2 mt-1">
               <option v-for="j in jenisOptions" :key="j" :value="j">{{ j }}</option>
@@ -298,17 +285,6 @@ async function deleteSkema(item) {
           <div>
             <label class="text-sm text-gray-700">File Skema (opsional, PDF/DOC)</label>
             <input type="file" accept=".pdf,.doc,.docx" @change="onFileChange" class="w-full border rounded px-3 py-2 mt-1" />
-          </div>
-          <div>
-            <label class="text-sm text-gray-700">Deskripsi</label>
-            <textarea v-model="form.deskripsi" class="w-full border rounded px-3 py-2 mt-1"></textarea>
-          </div>
-          <div>
-            <label class="text-sm text-gray-700">Status</label>
-            <select v-model="form.status" class="w-full border rounded px-3 py-2 mt-1">
-              <option value="aktif">Aktif</option>
-              <option value="nonaktif">Nonaktif</option>
-            </select>
           </div>
 
           <p v-if="formError" class="text-red-500 text-sm">{{ formError }}</p>
