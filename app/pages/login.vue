@@ -77,8 +77,9 @@
           class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 text-xs"
         >
           <p class="font-semibold mb-2">Demo Accounts:</p>
-          <p>Guru: {{ credentials[0].username }} / {{ credentials[0].password }}</p>
-          <p>Siswa: {{ credentials[1].username }} / {{ credentials[1].password }}</p>
+          <p>Admin: admin / admin123</p>
+          <p>Asesor: asesor / asesor123</p>
+          <p>Asesi: asesi / asesi123</p>
         </div>
       </div>
     </div>
@@ -88,26 +89,26 @@
 <script setup>
 import { GraduationCap } from "lucide-vue-next";
 import { ref } from "vue";
+
 const router = useRouter();
+const { login } = useAuth();
 
 const username = ref("");
 const password = ref("");
 const error = ref("");
+const loading = ref(false);
 
-const credentials = [
-  { username: "admin", password: "admin123", role: "admin" },
-  { username: "siswa", password: "siswa123", role: "siswa" },
-];
+const handleSubmit = async () => {
+  error.value = "";
+  loading.value = true;
 
-const handleSubmit = () => {
-  const user = credentials.find(
-    (u) => u.username === username.value && u.password === password.value,
-  );
-
-  if (user) {
-    router.push(`/dashboard`);
-  } else {
-    error.value = "Username atau password salah!";
+  try {
+    await login(username.value, password.value);
+    router.push("/dashboard");
+  } catch (e) {
+    error.value = e?.data?.message || "Username atau password salah!";
+  } finally {
+    loading.value = false;
   }
 };
 </script>
