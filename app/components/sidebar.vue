@@ -11,6 +11,7 @@ const toggleMenu = (menu) => {
 };
 
 const isAdmin = computed(() => user.value?.role === "admin");
+const isAsesor = computed(() => user.value?.role === "asesor");
 
 const handleLogout = async () => {
   await logout();
@@ -56,14 +57,33 @@ const handleLogout = async () => {
 
       <div
         class="overflow-hidden transition-all duration-300"
-        :class="openMenu === 'referensi' ? 'max-h-40' : 'max-h-0'"
+        :class="openMenu === 'referensi' ? 'max-h-60' : 'max-h-0'"
       >
         <NuxtLink
-          to="/referensi"
+          v-if="isAdmin"
+          to="/referensi/asesor"
           class="block ml-6 py-2 rounded transition-all duration-200"
           exact-active-class="bg-white/30"
         >
-          Data Skema
+          Data Asesor
+        </NuxtLink>
+
+        <NuxtLink
+          v-if="isAdmin"
+          to="/referensi/asesi"
+          class="block ml-6 py-2 rounded transition-all duration-200"
+          exact-active-class="bg-white/30"
+        >
+          Data Asesi
+        </NuxtLink>
+
+        <NuxtLink
+          v-if="isAdmin"
+          to="/referensi/tuk"
+          class="block ml-6 py-2 rounded transition-all duration-200"
+          exact-active-class="bg-white/30"
+        >
+          Data TUK
         </NuxtLink>
 
         <NuxtLink
@@ -74,11 +94,19 @@ const handleLogout = async () => {
         >
           Data Pengguna
         </NuxtLink>
+
+        <NuxtLink
+          to="/referensi"
+          class="block ml-6 py-2 rounded transition-all duration-200"
+          exact-active-class="bg-white/30"
+        >
+          Data Skema
+        </NuxtLink>
       </div>
     </div>
 
-    <!-- UJI KOMPETENSI -->
-    <div>
+    <!-- UJI KOMPETENSI (khusus asesor) -->
+    <div v-if="isAsesor">
       <button
         @click="toggleMenu('uji Kompetensi')"
         class="flex justify-between w-full px-4 py-2 hover:bg-white/20 rounded"
@@ -132,8 +160,32 @@ const handleLogout = async () => {
 
       <div
         class="overflow-hidden transition-all duration-300"
-        :class="openMenu === 'pengaturan' ? 'max-h-40' : 'max-h-0'"
+        :class="openMenu === 'pengaturan' ? 'max-h-60' : 'max-h-0'"
       >
+        <NuxtLink
+          v-if="isAdmin"
+          to="/pengaturan/tahun-aktif"
+          class="block ml-6 py-2 hover:bg-white/20 rounded"
+        >
+          Tahun Aktif
+        </NuxtLink>
+
+        <NuxtLink
+          v-if="isAdmin"
+          to="/pengaturan/kop-surat"
+          class="block ml-6 py-2 hover:bg-white/20 rounded"
+        >
+          Kop Surat
+        </NuxtLink>
+
+        <NuxtLink
+          v-if="isAdmin"
+          to="/pengaturan/asesor-skema"
+          class="block ml-6 py-2 hover:bg-white/20 rounded"
+        >
+          Asesor Skema
+        </NuxtLink>
+
         <NuxtLink
           to="/pengaturan/profile"
           class="block ml-6 py-2 hover:bg-white/20 rounded"
